@@ -8,6 +8,6 @@ module.exports = {
     siteUrl: `https://getreal.itsjesseyo.com`,
   },
   plugins: [{
-    resolve: `./source-plugin`,
+    resolve: `./appwriter-source-plugin`,
   }],
 }

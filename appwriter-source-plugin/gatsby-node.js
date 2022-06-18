@@ -1,5 +1,10 @@
 const env = require('node-env-file');
-env(__dirname + './../.env');
+try {
+  env(__dirname + './../.env');
+} catch (err) {
+  console.log('ENV WAS NOT FOUND, ASSUMING ENV Vars are set')
+}
+
 const {APPWRITE_PROJECT, APPWRITE_KEY, APPWRITE_ENDPOINT} = process.env
 const print = console.log
 const sdk = require('node-appwrite');

@@ -13,6 +13,7 @@ let db = new sdk.Database(client);
 exports.onPreInit = () => console.log("Loading houses");
 
 const HOUSE_NODE_TYPE = `House`;
+const EVENT_NODE_TYPE = `Event`;
 
 exports.sourceNodes = async ({
   actions,
@@ -35,6 +36,13 @@ exports.sourceNodes = async ({
           currentpage++;
       }
   }
+
+  // for(let i = 0; i < houses.length; i++){
+  //   const house = houses[i]
+  //   const results = await getStatusEvents(house.mls)
+  //   houses[i].statusEvents = results.documents
+  // }
+
   // loop through data and create Gatsby nodes
   houses.forEach(house =>
     createNode({
@@ -50,6 +58,36 @@ exports.sourceNodes = async ({
     })
   )
 
+  // ---------------
+
+  let eventsLeft = true;
+  currentpage = 0;
+  let events = [];
+
+  while (eventsLeft) {
+      let eventPages = await getStatusEventsPage(currentpage); 
+      events.push(...eventPages.documents);
+      if (100*currentpage >= eventPages.total) {
+        eventsLeft = false;
+      } else {
+          currentpage++;
+      }
+  }
+  // loop through data and create Gatsby nodes
+  events.forEach(event =>
+    createNode({
+      ...event,
+      id: createNodeId(`${EVENT_NODE_TYPE}-${event.$id}`),
+      parent: null,
+      children: [],
+      internal: {
+        type: EVENT_NODE_TYPE,
+        content: JSON.stringify(event),
+        contentDigest: createContentDigest(event),
+      },
+    })
+  )
+
   return
 }
 
@@ -57,5 +95,19 @@ async function getHousesPage(page = 0) {
   const limit = 100
   const houses = await db.listDocuments('62942eb0a4f128287cbc', [], limit, page * limit,null,null,['batch'], ['DESC'])
   return houses;
+}
+
+async function getStatusEventsPage(page = 0) {
+  const limit = 100
+  const events = await db.listDocuments('statusEvents', [], limit, page * limit,null,null,['date'], ['DESC'])
+  return events;
+}
+
+async function getStatusEvents(houseId) {
+  const limit = 100
+  const events = await db.listDocuments('statusEvents', [
+    sdk.Query.equal('mls', houseId)
+  ], limit, 0,null,null,['date'], ['DESC'])
+  return events;
 }
 

@@ -6,6 +6,12 @@ import { Card, Image, Statistic } from 'semantic-ui-react';
 
 import {PriceReducedTotals} from '../components/PriceReducedCounts/PriceReducedTotals'
 
+import time from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+time.extend(utc)
+time.extend(timezone)
+
 const priceToCurrency = (price) => {
   return new Intl.NumberFormat('en-US',
   { style: 'currency', currency: 'USD' }
@@ -23,6 +29,18 @@ const HouseDetails = ({zipcode, year, city}) => {
 const totalSold = (events) => {
   const results = events.filter(event => event.node.event === 'sold')
   return results.length
+}
+
+const avgSaleTime = (events) => {
+  const results = events.filter(event => event.node.event === 'sold')
+  let saleDuration = 0
+  results.map(event => {
+    console.log(event)
+    saleDuration = saleDuration + event.node.deltaTime
+    return event
+  })
+  const count = results.length
+  return Math.round(saleDuration/count)
 }
 
 const totalPriceReduced = (events) => {
@@ -59,10 +77,16 @@ const houseByMLS = (houses, mls) => {
   return results[0].node
 }
 
+const getNow = (buildTime) => {
+  return time(buildTime).tz("America/Denver").format('MM/DD hh:mm:ss')
+}
+
 const HomePage = ({ data }) => {
 
   return (
     <div className="house-container">
+
+      
 
       <PriceReducedTotals events={data.allEvent.edges} />
 
@@ -71,7 +95,7 @@ const HomePage = ({ data }) => {
       <Statistic.Group className="shrink">
         <Statistic>
           <Statistic.Value>{totalSold(data.allEvent.edges)}</Statistic.Value>
-          <Statistic.Label>sold</Statistic.Label>
+          <Statistic.Label>sold ({avgSaleTime(data.allEvent.edges)}D)</Statistic.Label>
         </Statistic>
         <Statistic>
           <Statistic.Value>{totalPriceReduced(data.allEvent.edges)}</Statistic.Value>
@@ -84,6 +108,7 @@ const HomePage = ({ data }) => {
       </Statistic.Group>
 
       <hr />
+      <p>last update: {getNow(data.site.buildTime)}</p>
 
       <h1>Top discounted houses</h1>
 
@@ -146,6 +171,9 @@ const HomePage = ({ data }) => {
 
 export const query = graphql`
   query {
+    site {
+      buildTime
+    }
     allHouse(
       limit:2000
       sort: {

@@ -9,5 +9,7 @@ module.exports = {
   },
   plugins: [{
     resolve: `./appwriter-source-plugin`,
-  }],
+  },
+  `gatsby-buildtime-timezone`,
+],
 }

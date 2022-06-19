@@ -68,22 +68,20 @@ const HomePage = ({ data }) => {
 
       <hr />
 
-      <div>
-        <Statistic.Group>
-          <Statistic>
-            <Statistic.Value>{totalSold(data.allEvent.edges)}</Statistic.Value>
-            <Statistic.Label>sold</Statistic.Label>
-          </Statistic>
-          <Statistic>
-            <Statistic.Value>{totalPriceReduced(data.allEvent.edges)}</Statistic.Value>
-            <Statistic.Label>price reduced</Statistic.Label>
-          </Statistic>
-          <Statistic>
-            <Statistic.Value>{housesAvailable(data.allHouse.edges)}</Statistic.Value>
-            <Statistic.Label>houses available</Statistic.Label>
-          </Statistic>
-        </Statistic.Group>
-      </div>
+      <Statistic.Group className="shrink">
+        <Statistic>
+          <Statistic.Value>{totalSold(data.allEvent.edges)}</Statistic.Value>
+          <Statistic.Label>sold</Statistic.Label>
+        </Statistic>
+        <Statistic>
+          <Statistic.Value>{totalPriceReduced(data.allEvent.edges)}</Statistic.Value>
+          <Statistic.Label>price reduced</Statistic.Label>
+        </Statistic>
+        <Statistic>
+          <Statistic.Value>{housesAvailable(data.allHouse.edges)}</Statistic.Value>
+          <Statistic.Label>houses available</Statistic.Label>
+        </Statistic>
+      </Statistic.Group>
 
       <hr />
 

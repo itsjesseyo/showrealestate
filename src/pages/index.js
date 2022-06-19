@@ -87,7 +87,7 @@ const HomePage = ({ data }) => {
     <div className="house-container">
 
       
-
+      <aside>last update: {getNow(data.site.buildTime)}</aside>
       <PriceReducedTotals events={data.allEvent.edges} />
 
       <hr />
@@ -108,7 +108,7 @@ const HomePage = ({ data }) => {
       </Statistic.Group>
 
       <hr />
-      <p>last update: {getNow(data.site.buildTime)}</p>
+      
 
       <h1>Top discounted houses</h1>
 

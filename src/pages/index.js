@@ -6,10 +6,12 @@ import { Card, Image, Statistic, Dropdown } from 'semantic-ui-react';
 
 import {PriceReducedTotals} from '../components/PriceReducedCounts/PriceReducedTotals'
 import CitySelector from '../components/CitySelector/CitySelector'
+import Helmet from "react-helmet"
 
 import time from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
+
 time.extend(utc)
 time.extend(timezone)
 
@@ -104,6 +106,11 @@ const HomePage = ({ data }) => {
 
   return (
     <div className="house-container">
+
+      <Helmet>
+        <title>Get Real, Jesse</title>
+        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </Helmet>
 
       
       <aside>last update: {getNow(data.site.buildTime)}</aside>

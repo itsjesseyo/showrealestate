@@ -23,3 +23,7 @@
 .ui.cards.latest > .card > .content, .ui.card > .content {
   background-color: lightgray;
 }
+
+select {
+  font-size: 50px;
+}

@@ -11,5 +11,6 @@ module.exports = {
     resolve: `./appwriter-source-plugin`,
   },
   `gatsby-buildtime-timezone`,
+  `gatsby-plugin-react-helmet`,
 ],
 }

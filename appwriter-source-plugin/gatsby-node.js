@@ -56,7 +56,7 @@ exports.sourceNodes = async ({
     }
   })
 
-  console.log(houses)
+  // console.log(houses)
 
   // loop through data and create Gatsby nodes
   houses.forEach(house =>

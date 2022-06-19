@@ -35,7 +35,6 @@ const avgSaleTime = (events) => {
   const results = events.filter(event => event.node.event === 'sold')
   let saleDuration = 0
   results.map(event => {
-    console.log(event)
     saleDuration = saleDuration + event.node.deltaTime
     return event
   })
@@ -49,7 +48,6 @@ const totalPriceReduced = (events) => {
 }
 
 const housesAvailable = (houses) => {
-  console.log(houses)
   const results = houses.filter(house => house.node.status === 'Active')
   return results.length
 }
@@ -68,7 +66,6 @@ const discountedHouses = (houses, events) => {
   results = results.filter(event => event.node.deltaValue > 14000)
   results.sort((a, b) => parseFloat(b.node.deltaValue) - parseFloat(a.node.deltaValue));
 
-  // console.log(results)
   return results
 }
 

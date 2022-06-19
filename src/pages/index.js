@@ -30,6 +30,12 @@ const totalPriceReduced = (events) => {
   return results.length
 }
 
+const housesAvailable = (houses) => {
+  console.log(houses)
+  const results = houses.filter(house => house.node.status === 'Active')
+  return results.length
+}
+
 const discountedHouses = (houses, events) => {
   let results = events.filter(event => event.node.event === 'price decrease')
 
@@ -72,6 +78,12 @@ const HomePage = ({ data }) => {
             <Statistic.Value>{totalPriceReduced(data.allEvent.edges)}</Statistic.Value>
             <Statistic.Label>price reduced</Statistic.Label>
           </Statistic>
+          <Statistic>
+            <Statistic.Value>{housesAvailable(data.allHouse.edges)}</Statistic.Value>
+            <Statistic.Label>houses available</Statistic.Label>
+          </Statistic>
+
+          
         </Statistic.Group>
       </div>
 
@@ -160,6 +172,7 @@ export const query = graphql`
           price
           acres
           url
+          status
         }
       }
     }

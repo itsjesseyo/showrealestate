@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { graphql } from "gatsby"
 
 import 'fomantic-ui-css/semantic.css'
-import { Card, Image, Statistic } from 'semantic-ui-react';
+import { Card, Image, Statistic, Dropdown } from 'semantic-ui-react';
 
 import {PriceReducedTotals} from '../components/PriceReducedCounts/PriceReducedTotals'
+import CitySelector from '../components/CitySelector/CitySelector'
 
 import time from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -52,7 +53,7 @@ const housesAvailable = (houses) => {
   return results.length
 }
 
-const discountedHouses = (houses, events) => {
+const discountedHouses = (houses, events, cityFilter) => {
   let results = events.filter(event => event.node.event === 'price decrease')
 
   for(let event of results){
@@ -66,6 +67,10 @@ const discountedHouses = (houses, events) => {
   results = results.filter(event => event.node.deltaValue > 14000)
   results.sort((a, b) => parseFloat(b.node.deltaValue) - parseFloat(a.node.deltaValue));
 
+  if(cityFilter != null){
+    results = results.filter(event => event.house.city === cityFilter)
+  }
+
   return results
 }
 
@@ -78,7 +83,24 @@ const getNow = (buildTime) => {
   return time(buildTime).tz("America/Denver").format('MM/DD hh:mm:ss')
 }
 
+const filterLatestHouses = (houses, cityFilter) => {
+  houses = houses.filter(house => house.node.status === 'Active')
+  if(cityFilter != null){
+    houses = houses.filter(house => house.node.city === cityFilter)
+  }
+  return houses
+}
+
+
+
 const HomePage = ({ data }) => {
+
+  const [cityFilter, setCityFilter] = useState(null)
+
+  const handleCitySelectorChange = (event, data) => {
+    const value = data.value || null
+    setCityFilter(value)
+  }
 
   return (
     <div className="house-container">
@@ -88,6 +110,7 @@ const HomePage = ({ data }) => {
       <PriceReducedTotals events={data.allEvent.edges} />
 
       <hr />
+
 
       <Statistic.Group className="shrink">
         <Statistic>
@@ -105,12 +128,15 @@ const HomePage = ({ data }) => {
       </Statistic.Group>
 
       <hr />
+
+      <CitySelector houses={data.allHouse.edges} onChange={handleCitySelectorChange} />
+
       
 
       <h1>Top discounted houses</h1>
 
       <Card.Group>
-        {discountedHouses(data.allHouse.edges, data.allEvent.edges).map((event, index) => (
+        {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter).map((event, index) => (
           <Card
           href={event.house.url}
           key={index}
@@ -139,8 +165,8 @@ const HomePage = ({ data }) => {
       <hr />
       <h1>Latest houses</h1>
 
-      <Card.Group>
-        {data.allHouse.edges.map((house, index) => (
+      <Card.Group className="latest">
+        {filterLatestHouses(data.allHouse.edges, cityFilter).map((house, index) => (
           <Card
           href={house.node.url}
           key={index}

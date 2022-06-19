@@ -82,8 +82,6 @@ const HomePage = ({ data }) => {
             <Statistic.Value>{housesAvailable(data.allHouse.edges)}</Statistic.Value>
             <Statistic.Label>houses available</Statistic.Label>
           </Statistic>
-
-          
         </Statistic.Group>
       </div>
 

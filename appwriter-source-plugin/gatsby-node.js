@@ -48,6 +48,16 @@ exports.sourceNodes = async ({
   //   houses[i].statusEvents = results.documents
   // }
 
+  houses = houses.map(house => {
+    const image = house.images[0] || ''
+    return {
+      ...house,
+      images: [image],
+    }
+  })
+
+  console.log(houses)
+
   // loop through data and create Gatsby nodes
   houses.forEach(house =>
     createNode({
@@ -78,6 +88,7 @@ exports.sourceNodes = async ({
           currentpage++;
       }
   }
+
   // loop through data and create Gatsby nodes
   events.forEach(event =>
     createNode({

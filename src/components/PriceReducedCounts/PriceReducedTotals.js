@@ -29,7 +29,7 @@ const ReductionOptions = {
   responsive: true,
   plugins: {
     title: {
-      display: true,
+      display: false,
       text: 'Price Reductions Per Day',
     },
   },

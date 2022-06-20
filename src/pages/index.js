@@ -55,6 +55,24 @@ const housesAvailable = (houses) => {
   return results.length
 }
 
+const findmedian = myarr => {
+  const median = Math.floor(myarr.length / 2),
+    nums = [...myarr].sort((x, y) => x - y);
+  return myarr.length % 2 !== 0 ? nums[median] : (nums[median - 1] + nums[median]) / 2;
+};
+
+const averageDaysListed = (houses) => {
+  const results = houses.filter(house => house.node.status === 'Active' && house.node.days_listed > 0)
+  let total = 0
+  results.map(house => {
+    total = total + house.node.days_listed
+    return house
+  })
+
+  const things = results.map(r => r.node.days_listed)
+  return Math.round(total / results.length)
+}
+
 const discountedHouses = (houses, events, cityFilter) => {
   let results = events.filter(event => event.node.event === 'price decrease')
 
@@ -130,7 +148,7 @@ const HomePage = ({ data }) => {
         </Statistic>
         <Statistic>
           <Statistic.Value>{housesAvailable(data.allHouse.edges)}</Statistic.Value>
-          <Statistic.Label>houses available</Statistic.Label>
+          <Statistic.Label>houses avail ({averageDaysListed(data.allHouse.edges)}D)</Statistic.Label>
         </Statistic>
       </Statistic.Group>
 
@@ -227,6 +245,7 @@ export const query = graphql`
           acres
           url
           status
+          days_listed
         }
       }
     }

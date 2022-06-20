@@ -20,7 +20,7 @@ const CitySelector = ({houses, onChange}) => {
     }
   })
 
-  return <Dropdown clearable options={cities} search selection onChange={onChange} />
+  return <Dropdown clearable options={cities} selection onChange={onChange} />
 }
 
 export default CitySelector

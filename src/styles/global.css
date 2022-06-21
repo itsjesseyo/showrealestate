@@ -27,3 +27,11 @@
 select {
   font-size: 50px;
 }
+
+.ui.statistics.shrink .statistic > .value, .ui.statistic > .value {
+  font-size: 3rem;
+}
+
+.ui.statistics.shrink .statistic > .label, .ui.statistic > .label {
+  font-size: .8rem;
+}

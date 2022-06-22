@@ -10,8 +10,21 @@ const options = [
 
 const CitySelector = ({houses, onChange}) => {
 
+  const manualCities = [
+    'Salt Lake City',
+    'South Salt Lake',
+    'Millcreek',
+    'West Valley City',
+    'West Jordan',
+    'Murray',
+    'Holladay',
+    'Zions Park',
+  ]
+
   let cities = houses.map(house => house.node.city)
   cities = [...new Set(cities)]
+  cities.sort()
+  cities = cities.filter(city => manualCities.includes(city) === true)
   cities = cities.map(city => {
     return {
       key: city,

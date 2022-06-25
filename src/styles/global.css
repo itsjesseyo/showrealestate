@@ -35,3 +35,10 @@ select {
 .ui.statistics.shrink .statistic > .label, .ui.statistic > .label {
   font-size: .8rem;
 }
+
+.ui.toggle.checkbox.price-limit {
+  margin-left: auto;
+  margin-right: 0px;
+  float: right;
+  transform: translateY(8px);
+}

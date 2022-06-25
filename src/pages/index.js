@@ -21,7 +21,8 @@ const priceToCurrency = (price) => {
 ).format(price)
 }
 
-const HouseTitle = ({beds, baths, acres, sq_footage, year}) => {
+const HouseTitle = (house) => {
+  const {beds, baths, acres, sq_footage, year} = house
   return `${beds}B${baths}b, ${sq_footage} sqft, ${acres} acre, ${year}`
 }
 
@@ -74,15 +75,21 @@ const averageDaysListed = (houses) => {
 }
 
 const discountedHouses = (houses, events, cityFilter) => {
-  let results = events.filter(event => event.node.event === 'price decrease')
+  let results = events.filter(event => event && event.node && event.node.event && event.node.event === 'price decrease')
 
   for(let event of results){
-    const house = houseByMLS(houses, event.node.mls)
-    event.house = house
-    event.node.currentStatus = Number(event.node.currentStatus)
-    event.node.previousStatus = Number(event.node.previousStatus)
-    event.node.deltaValue = event.node.previousStatus - event.node.currentStatus
+    try {
+      const house = houseByMLS(houses, event.node.mls)
+      event.house = house
+      event.node.currentStatus = Number(event.node.currentStatus)
+      event.node.previousStatus = Number(event.node.previousStatus)
+      event.node.deltaValue = event.node.previousStatus - event.node.currentStatus
+    }catch {
+
+    }
   }
+
+  results = results.filter(event => event.house)
 
   results = results.filter(event => event.node.deltaValue > 14000)
   results.sort((a, b) => parseFloat(b.node.deltaValue) - parseFloat(a.node.deltaValue));
@@ -163,10 +170,10 @@ const HomePage = ({ data }) => {
       <Card.Group>
         {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter).map((event, index) => (
           <Card
-          href={event.house.url}
+          href={event.house?.url}
           key={index}
           >
-          <Image src={event.house.images[0]} wrapped ui={false} />
+          <Image src={event.house?.images[0]} wrapped ui={false} />
           <Card.Content>
             <Card.Header>{HouseTitle(event.house)}</Card.Header>
             <Card.Description>

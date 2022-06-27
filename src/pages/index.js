@@ -90,6 +90,12 @@ const discountedHouses = (houses, events, cityFilter, priceFilter) => {
   }
 
   results = results.filter(event => event.house)
+  results = results.filter(event => event.house.status === 'Active')
+
+  const sevenDaysAgo = time().tz("America/Denver").millisecond(0).second(0).minute(0).subtract(7, 'days').unix()
+
+  // limit to last 7 days
+  results = results.filter(event => event.node.date >= sevenDaysAgo)
 
   results = results.filter(event => event.node.deltaValue > 14000)
   results.sort((a, b) => parseFloat(b.node.deltaValue) - parseFloat(a.node.deltaValue));
@@ -181,7 +187,7 @@ const HomePage = ({ data }) => {
 
       
 
-      <h1>Top discounted houses</h1>
+      <h1>Top discounted houses (7 days)</h1>
 
       <Card.Group>
         {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter, priceFilter).map((event, index) => (

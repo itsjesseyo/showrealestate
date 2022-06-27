@@ -119,8 +119,9 @@ export const PriceReducedTotals = ({events}) => {
     }
   })
   sales = sales.filter(event => event.day !== 1654408800)
-  sales = sales.filter(event => event.label !== '6/06' && event.label !== '6/07' && event.label !== '6/08' && event.label !== '6/09')
+  sales = sales.filter(event => event.label !== '6/06' && event.label !== '6/07' && event.label !== '6/08' && event.label !== '6/09' && event.label !== '6/14')
   sales.sort((a, b) => parseFloat(a.day) - parseFloat(b.day));
+
   sales.map(event => {
 
     const {label} = event
@@ -153,7 +154,7 @@ export const PriceReducedTotals = ({events}) => {
     }
   })
   events = events.filter(event => event.day !== 1654408800)
-
+  events = events.filter(event => event.label !== '6/06' && event.label !== '6/07' && event.label !== '6/08' && event.label !== '6/09' && event.label !== '6/14')
   events.sort((a, b) => parseFloat(a.day) - parseFloat(b.day));
 
   events.map(event => {

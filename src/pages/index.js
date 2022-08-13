@@ -160,7 +160,7 @@ const filterLatestHouses = (houses, cityFilter, priceFilter, zipFilter) => {
 const HomePage = ({ data }) => {
 
   const [cityFilter, setCityFilter] = useState(null)
-  const [priceFilter, setPriceFilter] = useState(false)
+  const [priceFilter, setPriceFilter] = useState(true)
   const [zipFilter, setZipFilter] = useState(true)
 
   const handleCitySelectorChange = (event, data) => {

@@ -12,8 +12,24 @@ import time from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 
+const print = console.log
+
 time.extend(utc)
 time.extend(timezone)
+
+const zipcodes = [
+  84101,
+  84102,
+  84103,
+  84105,
+  84106,
+  84108,
+  84109,
+  84111,
+  84112,
+  84113,
+  84115,
+]
 
 const priceToCurrency = (price) => {
   return new Intl.NumberFormat('en-US',
@@ -74,9 +90,8 @@ const averageDaysListed = (houses) => {
   return Math.round(total / results.length)
 }
 
-const discountedHouses = (houses, events, cityFilter, priceFilter) => {
+const discountedHouses = (houses, events, cityFilter, priceFilter, zipFilter) => {
   let results = events.filter(event => event && event.node && event.node.event && event.node.event === 'price decrease')
-
   for(let event of results){
     try {
       const house = houseByMLS(houses, event.node.mls)
@@ -92,12 +107,13 @@ const discountedHouses = (houses, events, cityFilter, priceFilter) => {
   results = results.filter(event => event.house)
   results = results.filter(event => event.house.status === 'Active')
 
-  const sevenDaysAgo = time().tz("America/Denver").millisecond(0).second(0).minute(0).subtract(7, 'days').unix()
+  const sevenDaysAgo = time().tz("America/Denver").millisecond(0).second(0).minute(0).subtract(14, 'days').unix()
 
   // limit to last 7 days
-  results = results.filter(event => event.node.date >= sevenDaysAgo)
+  // results = results.filter(event => event.node.date >= sevenDaysAgo)
 
-  results = results.filter(event => event.node.deltaValue > 14000)
+
+  // results = results.filter(event => event.node.deltaValue > 14000)
   results.sort((a, b) => parseFloat(b.node.deltaValue) - parseFloat(a.node.deltaValue));
 
   if(cityFilter != null){
@@ -107,7 +123,9 @@ const discountedHouses = (houses, events, cityFilter, priceFilter) => {
   if(priceFilter){
     results = results.filter(event => event.house.price < 600000)
   }
-  
+  if(zipFilter){
+    results = results.filter(event => zipcodes.includes(event.house.zipcode))
+  }
 
   return results
 }
@@ -121,13 +139,16 @@ const getNow = (buildTime) => {
   return time(buildTime).tz("America/Denver").format('MM/DD hh:mm:ss')
 }
 
-const filterLatestHouses = (houses, cityFilter, priceFilter) => {
+const filterLatestHouses = (houses, cityFilter, priceFilter, zipFilter) => {
   houses = houses.filter(house => house.node.status === 'Active')
   if(cityFilter != null){
     houses = houses.filter(house => house.node.city === cityFilter)
   }
   if(priceFilter){
     houses = houses.filter(house => house.node.price < 600000)
+  }
+  if(zipFilter){
+    houses = houses.filter(house => zipcodes.includes(house.node.zipcode))
   }
   return houses
 }
@@ -139,7 +160,8 @@ const filterLatestHouses = (houses, cityFilter, priceFilter) => {
 const HomePage = ({ data }) => {
 
   const [cityFilter, setCityFilter] = useState(null)
-  const [priceFilter, setPriceFilter] = useState(false)
+  const [priceFilter, setPriceFilter] = useState(true)
+  const [zipFilter, setZipFilter] = useState(true)
 
   const handleCitySelectorChange = (event, data) => {
     const value = data.value || null
@@ -149,6 +171,12 @@ const HomePage = ({ data }) => {
   const handleFilterPrice = (event, data) => {
     setPriceFilter(data.checked)
   }
+
+  const handleFilterZipcode = (event, data) => {
+    setZipFilter(data.checked)
+  }
+
+
 
   return (
     <div className="house-container">
@@ -183,14 +211,15 @@ const HomePage = ({ data }) => {
       <hr />
 
       <CitySelector houses={data.allHouse.edges} onChange={handleCitySelectorChange} />
-      <Radio toggle className="price-limit" label='limit price' onChange={handleFilterPrice}/>
+      <Radio toggle className="price-limit" label='limit price' onChange={handleFilterPrice} checked={priceFilter}/>
+      <Radio toggle className="price-limit" label='filter zipcode' onChange={handleFilterZipcode} checked={zipFilter}/>
 
       
 
       <h1>Top discounted houses (7 days)</h1>
 
       <Card.Group>
-        {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter, priceFilter).map((event, index) => (
+        {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter, priceFilter, zipFilter).map((event, index) => (
           <Card
           href={event.house?.url}
           key={index}
@@ -220,7 +249,7 @@ const HomePage = ({ data }) => {
       <h1>Latest houses</h1>
 
       <Card.Group className="latest">
-        {filterLatestHouses(data.allHouse.edges, cityFilter, priceFilter).map((house, index) => (
+        {filterLatestHouses(data.allHouse.edges, cityFilter, priceFilter, zipFilter).map((house, index) => (
           <Card
           href={house.node.url}
           key={index}

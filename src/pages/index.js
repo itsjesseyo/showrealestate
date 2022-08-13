@@ -160,7 +160,7 @@ const filterLatestHouses = (houses, cityFilter, priceFilter, zipFilter) => {
 const HomePage = ({ data }) => {
 
   const [cityFilter, setCityFilter] = useState(null)
-  const [priceFilter, setPriceFilter] = useState(true)
+  const [priceFilter, setPriceFilter] = useState(false)
   const [zipFilter, setZipFilter] = useState(true)
 
   const handleCitySelectorChange = (event, data) => {
@@ -216,7 +216,7 @@ const HomePage = ({ data }) => {
 
       
 
-      <h1>Top discounted houses (7 days)</h1>
+      <h1>Top discounted houses</h1>
 
       <Card.Group>
         {discountedHouses(data.allHouse.edges, data.allEvent.edges, cityFilter, priceFilter, zipFilter).map((event, index) => (

@@ -42,3 +42,10 @@ select {
   float: right;
   transform: translateY(8px);
 }
+
+.ui.toggle.checkbox.zip-limit {
+  margin-left: auto;
+  margin-right: 20px;
+  float: right;
+  transform: translateY(8px);
+}

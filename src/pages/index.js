@@ -212,7 +212,7 @@ const HomePage = ({ data }) => {
 
       <CitySelector houses={data.allHouse.edges} onChange={handleCitySelectorChange} />
       <Radio toggle className="price-limit" label='limit price' onChange={handleFilterPrice} checked={priceFilter}/>
-      <Radio toggle className="price-limit" label='filter zipcode' onChange={handleFilterZipcode} checked={zipFilter}/>
+      <Radio toggle className="zip-limit" label='filter zipcode' onChange={handleFilterZipcode} checked={zipFilter}/>
 
       
 
